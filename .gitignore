@@ -1,0 +1,55 @@
+# Laravel & general PHP
+/vendor
+/node_modules
+/public/storage
+/storage/*.key
+.env
+.env.*.backup
+Homestead.yaml
+Homestead.json
+/.vagrant
+.phpunit.result.cache
+phpunit.xml
+phpunit.xml.dist
+*.log
+ 
+# IDE and Editor Specific
+.idea
+.vscode
+*.sublime-workspace
+*.sublime-project
+*.sublime-package
+ 
+# OS specific
+.DS_Store
+Thumbs.db
+ 
+# Build output
+/build
+/dist
+ 
+# Laravel specific
+/storage/app/public
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
+/storage/logs
+/storage/framework/testing
+/storage/app/laravel-ide-helper.php
+ 
+# Composer specific
+composer.lock
+ 
+# NPM specific
+npm-debug.log
+yarn-error.log
+ 
+# Docker
+docker-compose.override.yml
+.docker
+ 
+# Vagrant
+.vagrant
+ 
+# Sentry configuration
+sentry.properties
