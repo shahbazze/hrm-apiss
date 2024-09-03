@@ -39,22 +39,44 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'status' => 'boolean',
-            'pass' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'status' => 'boolean',
+        'pass' => 'hashed',
+    ];
 
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
     }
-    
+
+    /**
+     * Define a relationship to the TeamMember model.
+     * 
+     * This allows the user to be part of multiple teams through the TeamMember model.
+     */
+    public function teamMembers()
+    {
+        return $this->hasMany(TeamMember::class);
+    }
+
+    /**
+     * Get all teams the user belongs to.
+     *
+     * This defines a many-to-many relationship through the team_members table.
+     */
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'team_members')->withPivot('is_team_lead');
+    }
 }
