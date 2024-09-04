@@ -15,47 +15,29 @@ class TeamController extends Controller
         $this->teamService = $teamService;
     }
 
-    /**
-     * Handle the addition of a new team.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function addTeam(Request $request)
     {
         return $this->teamService->addTeam($request);
     }
 
-    /**
-     * Handle the addition of multiple team members.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+    public function deleteTeam(Request $request)
+    {
+        return $this->teamService->deleteTeam($request);
+    }
+
     public function addTeamMembers(Request $request)
     {
         return $this->teamService->addTeamMembers($request);
     }
-
-    /**
-     * Set a new team lead for the specified team.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+  
     public function setTeamLead(Request $request)
     {
         return $this->teamService->setTeamLead($request);
     }
 
-    /**
-     * Remove a user from a team.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function removeTeamMember(Request $request)
+    public function removeMultipleTeamMembers(Request $request)
     {
-        return $this->teamService->removeTeamMember($request);
+        return $this->teamService->removeMultipleTeamMembers($request);
     }
+
 }

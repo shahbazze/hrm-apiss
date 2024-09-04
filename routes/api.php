@@ -25,11 +25,9 @@ use App\Services\UserService;
 Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.reset');
 
-
 // Authentication routes
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
-
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('logout', [AuthController::class, 'logout']);
@@ -37,13 +35,11 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-
 // Owner routes
 Route::middleware(['auth:sanctum', 'role:Owner'])->group(function () {
-    Route::post('/owner/role-permissions', [OwnerController::class, 'setRolePermissions']);
+    Route::post('/owner/set-roles-permissions', [OwnerController::class, 'setRolePermissions']);
     Route::post('/owner/add-permissions', [OwnerController::class, 'addPermissions']);
 });
-
 
 // User routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -51,13 +47,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('user/add-user', [UserController::class, 'addUser']);
     // Route to delete a user account
     Route::delete('/user/delete-account', [UserController::class, 'deleteAccount']);
-
-    
 });
-
+// team routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('team/add', [TeamController::class, 'addTeam']);
+    Route::post('team/delete', [TeamController::class, 'deleteTeam']);
     Route::post('team/add-members', [TeamController::class, 'addTeamMembers']); // Route to add team members
     Route::post('team/set-teamlead', [TeamController::class, 'setTeamLead']); // Route to set team lead
-    Route::post('team/remove-member', [TeamController::class, 'removeTeamMember']); // Route to remove team member
+    Route::post('team/remove-multiple-members', [TeamController::class, 'removeMultipleTeamMembers']); // Route to remove  multiple team member
 });
