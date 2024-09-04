@@ -2,48 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage; // Import the Storage facade
 use Spatie\Permission\Models\Role;
-use App\Helpers\User\UsernameHelper; // Import the UsernameHelper
 use Spatie\Permission\Models\Permission;
 class OwnerController extends Controller
 {
-   
-   
 
-    /**
-     * Assign permissions to a role.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function setRolePermissions(Request $request)
-    {
-        // Validate the incoming request
-        $request->validate([
-            'role' => 'required|string|exists:roles,name', // Ensure the role exists
-            'permissions' => 'required|array', // Permissions should be an array
-            'permissions.*' => 'string|exists:permissions,name', // Validate each permission
-        ]);
+{
+    // Validate the incoming request
+    $request->validate([
+        'roles_permissions' => 'required|array', // Ensure the request body is an array
+        'roles_permissions.*.role' => 'required|string|exists:roles,name', // Ensure the role exists
+        'roles_permissions.*.permissions' => 'required|string|exists:permissions,name', // Validate each permission
+    ]);
 
-        // Find the role by name
-        $role = Role::findByName($request->role, 'api'); // Adjust the guard as needed
+    // Initialize an array to keep track of updated roles
+    $updatedRoles = [];
 
+    // Process each role-permissions object
+    foreach ($request->roles_permissions as $item) {
+        $role = Role::findByName($item['role'], 'api'); // Adjust the guard as needed
+        
         // Sync the permissions for the role
-        $role->syncPermissions($request->permissions);
+        $role->syncPermissions([$item['permissions']]);
 
-        return response()->json(['message' => 'Permissions updated successfully for the role.']);
+        // Record the role update
+        $updatedRoles[] = $item['role'];
     }
 
-     /**
-     * Add a new permission to the system.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+    return response()->json([
+        'message' => 'Permissions updated successfully for the roles.',
+        'roles_updated' => array_unique($updatedRoles) // Return the list of roles updated
+    ]);
+}
+
+
     public function addPermissions(Request $request)
     {
         // Validate the incoming request
