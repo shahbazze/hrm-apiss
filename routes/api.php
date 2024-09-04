@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\OwnerController; // Import the OwnerController
 use App\Http\Controllers\UserController; // Import the UserController
+use App\Http\Controllers\TeamController; // Import the TeamController
 use App\Services\UserService;
 /*
 |--------------------------------------------------------------------------
@@ -49,9 +50,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('user/account-settings', [UserController::class, 'updateAccountSettings']); // Route for user to update their account settings
     Route::post('user/add-user', [UserController::class, 'addUser']);
     // Route to delete a user account
-    Route::delete('/user/delete-account', [UserController::class, 'deleteAccount'])
-        ->middleware('role:Owner|Admin') // Role check only
-        ->name('user.delete');
+    Route::delete('/user/delete-account', [UserController::class, 'deleteAccount']);
 
     
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('team/add', [TeamController::class, 'addTeam']);
+    Route::post('team/add-members', [TeamController::class, 'addTeamMembers']); // Route to add team members
+    Route::post('team/set-teamlead', [TeamController::class, 'setTeamLead']); // Route to set team lead
+    Route::post('team/remove-member', [TeamController::class, 'removeTeamMember']); // Route to remove team member
 });
