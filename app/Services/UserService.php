@@ -5,10 +5,12 @@ namespace App\Services;
 
 
 use App\Models\User;
+use App\Models\Team; // Import the Team model
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\User\UsernameHelper; // Import the UsernameHelper
+use Illuminate\Support\Facades\Validator; // Import the Validator facade
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
@@ -85,9 +87,6 @@ class UserService
         $user->delete();
     }
 
-
-
-
     public function addUser(Request $request)
     {
         // Validate the incoming request
@@ -153,4 +152,41 @@ class UserService
 
         return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
     }
+
+
+
+    /**
+     * Handle the addition of a new team.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function addTeam(Request $request)
+    {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'team_name' => 'required|string|max:255|unique:teams,team_name',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        // Get the authenticated user
+        $authUser = Auth::user();
+
+        // Check if the authenticated user can perform the create-team task
+        if (!canUserPerformTask($authUser, 'create-team')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // Create the new team
+        $team = Team::create([
+            'team_name' => $request->team_name,
+        ]);
+
+        return response()->json(['message' => 'Team created successfully', 'team' => $team], 201);
+    }
+
+
 }
